@@ -36,8 +36,9 @@ function config()
   export JETTY_PID="$OUTPUT_HOME/$JETTY_ID/logs/jetty/jetty.pid"
   export OUTPUT_LOGS="$OUTPUT_HOME/$JETTY_ID/logs"
   # jvm configuration
+  export TMPDIR=$JETTY_TMPDIR
   export JAVA="$JAVA_HOME/bin/java"
-  export JAVA_OPTIONS="$JAVA_OPTS"
+  export JAVA_OPTIONS="$JAVA_OPTS -Duploadproxy.log.base=$OUTPUT_LOGS"
 }
 
 function prepare()
@@ -70,7 +71,7 @@ function start()
 {
   config $1
   prepare $1
-  $JETTY_HOME/bin/jetty.sh start &> $OUTPUT_HOME/logs/jetty/jetty_stdout.log
+  $JETTY_HOME/bin/jetty.sh start &> $OUTPUT_LOGS/jetty/jetty_stdout.log
 }
 
 function stop()
