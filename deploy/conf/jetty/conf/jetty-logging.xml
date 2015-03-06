@@ -5,11 +5,11 @@
     <New id="ServerLog" class="java.io.PrintStream">
       <Arg>
         <New class="java.io.FileOutputStream">
-          <Arg>/home/admin/uploadproxy/output/logs/jetty/jetty_stdout.log</Arg>
+          <Arg>#OUTPUT_LOGS#/jetty/jetty_stdout.log</Arg>
         </New>
       </Arg>
     </New>
 	
-    <Call class="java.lang.System" name="setErr"><Arg><Ref id="ServerLog"/></Arg></Call>
-    <Call class="java.lang.System" name="setOut"><Arg><Ref id="ServerLog"/></Arg></Call>
+    <Call class="java.lang.System" name="setErr"><Arg><Ref id="ServerLog" /></Arg></Call>
+    <Call class="java.lang.System" name="setOut"><Arg><Ref id="ServerLog" /></Arg></Call>
 </Configure>

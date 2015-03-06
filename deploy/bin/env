@@ -9,8 +9,8 @@ DEPLOY_HOME="/Users/jinli/Tmp/deploy"
 JETTY_SERVER_HOME="/Users/jinli/Tmp/deploy/jetty_server"
 OUTPUT_HOME="/Users/jinli/Tmp/deploy/output"
 
-APP_PORT=""
-BASE_JETTY_PORT=""
+APP_PORT="8080"
+BASE_JETTY_PORT="8081"
 APP_NAME=""
 UNIX_USER=""
 PRODUCTION=true

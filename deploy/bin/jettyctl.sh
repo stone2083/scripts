@@ -16,17 +16,25 @@ BASE=$(dirname $0)/..
 
 . $BASE/bin/env
 
+function sed()
+{
+  /usr/local/bin/gsed $*
+}
+
 function config()
 {
-  ID=$1
+  export JETTY_ID=$1
+  let JETTY_PORT=$BASE_JETTY_PORT+$JETTY_ID-1
   # jetty configuration
-  JETTY_TMPDIR="$JETTY_SERVER_HOME/$ID/tmp"
-  JETTY_CONF="$JETTY_SERVER_HOME/$ID/conf"
-  JETTY_WEBAPPS="$JETTY_SERVER_HOME/$ID/webapps"
-  START_INI="$JETTY_SERVER_HOME/$ID/conf/start.ini"
-  JETTY_ARGS="--ini=$START_INI"
-  JETTY_LOGS="$JETTY_SERVER_HOME/$ID/logs"
-  JETTY_PID="$OUTPUT_HOME/$ID/logs/jetty/jetty.pid"
+  export JETTY_PORT
+  export JETTY_TMPDIR="$JETTY_SERVER_HOME/$JETTY_ID/tmp"
+  export JETTY_CONF="$JETTY_SERVER_HOME/$JETTY_ID/conf"
+  export JETTY_WEBAPPS="$JETTY_SERVER_HOME/$JETTY_ID/webapps"
+  export START_INI="$JETTY_SERVER_HOME/$JETTY_ID/conf/start.ini"
+  export JETTY_ARGS="--ini=$START_INI"
+  export JETTY_LOGS="$JETTY_SERVER_HOME/$JETTY_ID/logs"
+  export JETTY_PID="$OUTPUT_HOME/$JETTY_ID/logs/jetty/jetty.pid"
+  export OUTPUT_LOGS="$OUTPUT_HOME/$JETTY_ID/logs"
   # jvm configuration
   export JAVA="$JAVA_HOME/bin/java"
   export JAVA_OPTIONS="$JAVA_OPTS"
@@ -35,18 +43,24 @@ function config()
 function prepare()
 {
   # clean jetty server
-  if [ -d "$JETTY_SERVER_HOME/$ID" ] ; then
-    rm -rf  "$JETTY_SERVER_HOME/$ID"
+  if [ -d "$JETTY_SERVER_HOME/$JETTY_ID" ] ; then
+    rm -rf  "$JETTY_SERVER_HOME/$JETTY_ID"
   fi
   mkdir -p "$JETTY_SERVER_HOME"
   mkdir -p "$JETTY_WEBAPPS"
   mkdir -p "$JETTY_LOGS"
   mkdir -p "$JETTY_TMPDIR"
-  mkdir -p "$OUTPUT_HOME/logs/jetty"
+  mkdir -p "$OUTPUT_HOME/$JETTY_ID/logs/jetty"
 
   # cp file to jetty server home.
   cp -r "$BASE/conf/jetty/conf" $JETTY_CONF
-  # TODO: update vars by jetty instance id
+  T_JETTY_CONF=$(echo $JETTY_CONF | sed 's/\//\\\//g')
+  T_OUTPUT_LOGS=$(echo $OUTPUT_LOGS | sed 's/\//\\\//g')
+  T_JETTY_WEBAPPS=$(echo $JETTY_WEBAPPS | sed 's/\//\\\//g')
+  sed -i "s/#JETTY_CONF#/$T_JETTY_CONF/g" $JETTY_CONF/start.ini
+  sed -i "s/#OUTPUT_LOGS#/$T_OUTPUT_LOGS/g" $JETTY_CONF/jetty-logging.xml
+  sed -i "s/#JETTY_PORT#/$JETTY_PORT/g" $JETTY_CONF/jetty.xml
+  sed -i "s/#JETTY_WEBAPPS#/$T_JETTY_WEBAPPS/g" $JETTY_CONF/jetty.xml
 
   rm -rf  "$JETTY_WEBAPPS/root.war"
   cp  "$BASE/web.war"  "$JETTY_WEBAPPS/root.war"
@@ -57,14 +71,14 @@ function start()
   config $1
   prepare $1
   #$JETTY_HOME/bin/jetty.sh start &> $OUTPUT_HOME/logs/jetty/jetty_stdout.log
-  echo "start $ID"
+  echo "start $JETTY_ID"
 }
 
 function stop()
 {
   config $1
   #$JETTY_HOME/bin/jetty.sh stop
-  echo "stop $ID"
+  echo "stop $JETTY_ID"
 }
 
 function start_all()
