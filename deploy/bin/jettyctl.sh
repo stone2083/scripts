@@ -70,15 +70,13 @@ function start()
 {
   config $1
   prepare $1
-  #$JETTY_HOME/bin/jetty.sh start &> $OUTPUT_HOME/logs/jetty/jetty_stdout.log
-  echo "start $JETTY_ID"
+  $JETTY_HOME/bin/jetty.sh start &> $OUTPUT_HOME/logs/jetty/jetty_stdout.log
 }
 
 function stop()
 {
   config $1
-  #$JETTY_HOME/bin/jetty.sh stop
-  echo "stop $JETTY_ID"
+  $JETTY_HOME/bin/jetty.sh stop
 }
 
 function start_all()
