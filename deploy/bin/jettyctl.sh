@@ -67,6 +67,27 @@ function prepare()
   cp  "$BASE/web.war"  "$JETTY_WEBAPPS/root.war"
 }
 
+function monitor()
+{
+  local startup=$(date +%s)
+  for((i=0;i<$JETTY_INSTANCE_NUM;i++))
+  {
+    local jettyport=$($BASE_JETTY_PORT+$i)
+    local checkurl=$(echo $CHECK_STARTUP_URL | sed "s/#JETTY_PORT#/$jettyport/g")
+    while true; do
+      local count=$(curl -m 3 -s $checkurl | grep -ic "$STARTUP_SUCCESS_MSG")
+      local endup=$(date +%s)
+      local dur=$((endup - startup))
+      if [ count -gt 0 ];then
+        break
+      else
+        echo -n -e "\rWait Jetty Start: $dur second"
+        sleep 1
+      fi
+    done
+  }
+}
+
 function start()
 {
   config $1
@@ -87,6 +108,7 @@ function start_all()
     let id=$i+1
     start $id
   }
+  monitor
 }
 
 function stop_all()

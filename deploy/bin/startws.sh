@@ -16,5 +16,5 @@ error_handle()
 trap error_handle ERR
 set -e
 
-BASE=$(dirname $0/..)
-$BASE/bin/jettyctl.sh start
+BASE=$(dirname $0)
+$BASE/jettyctl.sh start
