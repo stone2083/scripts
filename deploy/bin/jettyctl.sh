@@ -13,20 +13,14 @@ trap error_handle ERR
 set -e
 
 BASE=$(dirname $0)/..
-
 . $BASE/bin/env
-
-function sed()
-{
-  /usr/local/bin/gsed $*
-}
 
 function config()
 {
+  # jetty instance id
   export JETTY_ID=$1
-  let JETTY_PORT=$BASE_JETTY_PORT+$JETTY_ID-1
   # jetty configuration
-  export JETTY_PORT
+  export JETTY_PORT=$(($BASE_JETTY_PORT+$JETTY_ID-1))
   export JETTY_TMPDIR="$JETTY_SERVER_HOME/$JETTY_ID/tmp"
   export JETTY_CONF="$JETTY_SERVER_HOME/$JETTY_ID/conf"
   export JETTY_WEBAPPS="$JETTY_SERVER_HOME/$JETTY_ID/webapps"
@@ -72,18 +66,17 @@ function monitor()
   local startup=$(date +%s)
   for((i=0;i<$JETTY_INSTANCE_NUM;i++))
   {
-    local jettyport=$($BASE_JETTY_PORT+$i)
+    local jettyport=$(($BASE_JETTY_PORT+$i))
     local checkurl=$(echo $CHECK_STARTUP_URL | sed "s/#JETTY_PORT#/$jettyport/g")
     while true; do
       local count=$(curl -m 3 -s $checkurl | grep -ic "$STARTUP_SUCCESS_MSG")
       local endup=$(date +%s)
-      local dur=$((endup - startup))
+      local dur=$(($endup - $startup))
       if [ count -gt 0 ];then
         break
-      else
-        echo -n -e "\rWait Jetty Start: $dur second"
-        sleep 1
       fi
+      echo -n -e "\rWait Jetty Start: $dur second"
+      sleep 1
     done
   }
 }
@@ -105,7 +98,7 @@ function start_all()
 {
   for((i=0;i<$JETTY_INSTANCE_NUM;i++))
   {
-    let id=$i+1
+    id=$(($i+1))
     start $id
   }
   monitor
@@ -115,7 +108,7 @@ function stop_all()
 {
   for((i=0;i<$JETTY_INSTANCE_NUM;i++))
   {
-    let id=$i+1
+    id=$(($i+1))
     stop $id
   }
 }

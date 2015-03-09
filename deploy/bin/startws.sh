@@ -4,11 +4,11 @@ if [ $(id -u) = 0 ]
 then
   echo "****************************************************"
   echo "*Error: root (the superuser) can't run this script.*"
-  echo "****************************************************"    
+  echo "****************************************************"
   exit 1
 fi
 
-error_handle() 
+error_handle()
 {
   echo "error @ line ${BASH_LINENO}. exit with status $?"
 }
