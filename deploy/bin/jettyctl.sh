@@ -102,7 +102,7 @@ function start_all()
     start $id
   }
   monitor
-  echo '\n'
+  echo ''
 }
 
 function stop_all()
