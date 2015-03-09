@@ -3,6 +3,7 @@
 # =================================
 JAVA_HOME="/usr"
 JETTY_HOME=""
+NGINX_HOME=""
 DEPLOY_HOME="/Users/jinli/Tmp/deploy"
 JETTY_SERVER_HOME="/Users/jinli/Tmp/deploy/jetty_server"
 OUTPUT_HOME="/Users/jinli/Tmp/deploy/output"
