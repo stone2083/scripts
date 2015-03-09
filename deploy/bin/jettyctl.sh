@@ -72,10 +72,10 @@ function monitor()
       local count=$(curl -m 3 -s $checkurl | grep -ic "$STARTUP_SUCCESS_MSG")
       local endup=$(date +%s)
       local dur=$(($endup - $startup))
-      if [ count -gt 0 ];then
+      echo -n -e "\rWait Jetty Start: $dur second"
+      if [ $count -gt 0 ];then
         break
       fi
-      echo -n -e "\rWait Jetty Start: $dur second"
       sleep 1
     done
   }
