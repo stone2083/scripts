@@ -18,4 +18,4 @@ set -e
 
 BASE=$(dirname $0)
 $BASE/jettyctl.sh start
-/home/admin/cai/bin/nginxctl start
+$BASE/nginxctl.sh start

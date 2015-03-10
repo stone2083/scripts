@@ -1,5 +1,5 @@
 #!/bin/bash
 
 BASE=$(dirname $0)
-/home/admin/cai/bin/nginxctl stop
+$BASE/nginxctl.sh stop
 $BASE/jettyctl.sh stop
